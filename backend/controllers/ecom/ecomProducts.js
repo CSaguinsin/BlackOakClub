@@ -1,15 +1,16 @@
-const products = require('../data/mockEcomDB')
+const products = require('../../data/mockEcomDB')
 
 const getAllProducts = (req, res) => {
     res.json(products);
 };
 
 const createProducts = (req, res) => {
-    const { productName, productPrice } = req.body;
+    const { productName, productPrice, productDescription } = req.body;
     const newProduct = {
-        id: products.length + 1,
+        productId: products.length + 1,
         productName,
         productPrice,
+        productDescription,
         createdAt: new Date(),
     };
     products.push(newProduct);
