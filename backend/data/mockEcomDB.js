@@ -6,3 +6,7 @@ module.exports = orders
 
 const products = []
 module.exports = products
+
+
+const inquiries = []
+module.exports = inquiries
