@@ -19,16 +19,30 @@ const createProducts = (req, res) => {
 
 const updateProducts = (req, res) => {
     const id = parseInt(req.params.id);
-    const { product } = req.body;
+    const {
+        productId,
+        productName,
+        productDescription,
+        productPrice,
+        productCategory,
+        productStock
+    } = req.body;
 
-    const index = products.findIndex(updateproduct => updateproduct.id === id);
+    const index = products.findIndex(product => product.id === id);
     if (index !== -1) {
-        products[index].product = product;
+        // Update only provided fields
+        if (productId !== undefined) products[index].productId = productId;
+        if (productName !== undefined) products[index].productName = productName;
+        if (productDescription !== undefined) products[index].productDescription = productDescription;
+        if (productPrice !== undefined) products[index].productPrice = productPrice;
+        if (productCategory !== undefined) products[index].productCategory = productCategory;
+        if (productStock !== undefined) products[index].productStock = productStock;
+
         return res.json(products[index]);
     }
 
-    res.status(404).json({ error: 'Product not found'});
-}
+    res.status(404).json({ error: 'Product not found' });
+};
 
 
 const deleteProducts = (req, res) => {

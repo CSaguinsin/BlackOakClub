@@ -1,11 +1,9 @@
 const express = require('express');
 const app = express();
 // // ecommerce routes
-// const ecomCategoriesRoutes = require('./routes/ecommerce/categories');
 const ecomOrderRoutes = require('./routes/ecommerce/orders');
 const ecomProductRoutes = require('./routes/ecommerce/products');
 app.use(express.json());
-// app.use(ecomCategoriesRoutes);
 app.use(ecomOrderRoutes);
 app.use(ecomProductRoutes);
 
