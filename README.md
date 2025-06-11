@@ -1,36 +1,179 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BlackOak Club
+A full stack e-commerce web app built using the following technologies. This project aim to developed a webstore and internal CRM tool for BlackOak.
 
-## Getting Started
+- reactjs, <br>
+- nodejs/expressjs,  <br>
+- mysql,  <br>
+- Railway
+- postman
+- git
+## Backend architecture
+Created using ExpressJs, followed the industry standard of creating ```Routes```, and ```Controllers``` on seperate file and the ```server.js``` as the entry point of the expressJs app.
+<br> 
+First is the E-commerce expressjs endpoint. named the folders ```ecom``` on the controllers, and ```ecommerce``` on the routes. This have two endpoints, ```Orders``` and ```Products```
+### Orders controller (ecomOrders.js)
+```javascript
+const orders = require('../../data/mockEcomDB')
 
-First, run the development server:
+const getAllOrders = (req, res) => {
+    res.json(orders);
+}
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+const addNewOrders = (req, res) => {
+    const { 
+        productName,
+        customerEmail, 
+        customerFullName, 
+        customerAddress, 
+        customerPhoneNumber, 
+        customerCity, 
+        customerPostalCode  
+    } = req.body;
+
+    const newOrder = {
+        id: orders.length + 1,
+        productName,
+        customerEmail,
+        customerFullName,
+        customerAddress,
+        customerPhoneNumber,
+        customerCity,
+        customerPostalCode      
+    };
+    orders.push(newOrder);
+    res.status(201).json(newOrder);
+};
+
+const updateOrders = (req, res) => {
+    const id = parseInt(req.params.id);
+    const {
+        productName,
+        customerEmail,
+        customerFullName,
+        customerAddress,
+        customerPhoneNumber,
+        customerCity,
+        customerPostalCode
+    } = req.body;
+
+    const index = orders.findIndex(order => order.id === id);
+    if (index !== -1) {
+        // Update only provided fields
+        if (productName !== undefined) orders[index].productName = productName;
+        if (customerEmail !== undefined) orders[index].customerEmail = customerEmail;
+        if (customerFullName !== undefined) orders[index].customerFullName = customerFullName;
+        if (customerAddress !== undefined) orders[index].customerAddress = customerAddress;
+        if (customerPhoneNumber !== undefined) orders[index].customerPhoneNumber = customerPhoneNumber;
+        if (customerCity !== undefined) orders[index].customerCity = customerCity;
+        if (customerPostalCode !== undefined) orders[index].customerPostalCode = customerPostalCode;
+
+        return res.json(orders[index]);
+    }
+
+    res.status(404).json({ error: 'Order not found' });
+};
+
+
+const deleteOrders = (req, res) => {
+    const id = parseInt(req.params.id);
+    const index = orders.findIndex(updateorder => updateorder.id === id);
+    if(index !== -1) {
+        const deleted = orders.splice(index, 1);
+        return res.json({ message: 'Order Deleted Successfully', deleted});
+    }
+
+    res.status(404).json({ error: 'Order not found'});
+};
+
+module.exports = {
+    getAllOrders,
+    addNewOrders,
+    updateOrders,
+    deleteOrders
+}
+
+
 ```
+On the ```addNewOrders``` function it represents all the columns needed to be filled from the frontend into the database table
+We have the following columns
+```
+productName,
+customerEmail, 
+customerFullName, 
+customerAddress, 
+customerPhoneNumber, 
+customerCity, 
+customerPostalCode 
+```
+And on the ```deleteOrders``` function all that is needed is the order id. **PLEASE DONT FORGET TO EXPORT ALL OF THE FUNCTION BEFORE IMPORTING ON THE DESIGNATED ROUTE FILE**
+### Orders route (orders.js)
+``` javascript
+const express = require('express');
+const {
+    getAllOrders,
+    addNewOrders,
+    updateOrders,
+    deleteOrders
+} = require('../../controllers/ecom/ecomOrders');
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+const router = express.Router();
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+router.get('/api/orders', getAllOrders);
+router.post('/api/orders', addNewOrders);
+router.put('/api/orders/:id', updateOrders);
+router.delete('/api/orders/:id', deleteOrders);
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+module.exports = router;
 
-## Learn More
+```
+And then call the route ```orders.js``` in ```server.js``` 
+```javascript
+const express = require('express');
+const app = express();
+// ecommerce routes
+const ecomOrderRoutes = require('./routes/ecommerce/orders');
+const ecomProductRoutes = require('./routes/ecommerce/products');
+app.use(express.json());
+app.use(ecomOrderRoutes);
+app.use(ecomProductRoutes);
 
-To learn more about Next.js, take a look at the following resources:
+// crm routes
+const crmInquiriesRoute = require('./routes/crm/inquiries');
+app.use(express.json());
+app.use(crmInquiriesRoute);
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
+});
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```
+**Orders endpoint working correctly, tested using ```Postman``` To test on postman run the backend server with this command ```node server.js```, and do the following:**
+<br>
+### For the ```GET``` HTTP request do  the following:
+Put the HTTP request on ```GET```  and then put the ```router.get('/api/orders', getAllOrders);``` as ```http://localhost:3000/api/orders```
+### For the ```POST``` HTTP request do  the following:
+Put the HTTP request on ```POST```  and then put the ```router.post('/api/orders', addNewOrders);``` as ```http://localhost:3000/api/orders``` and choose the ```Body``` and populate it with this format
+```javascript
+{
+    "productName": "Black Oak Manila Varsity Old",
+    "customerEmail": "saguinsintestmail@gmail.com", 
+    "customerFullName": "Carl Saginsin", 
+    "customerAddress": "Barangay 3, San Sebastian Street Quiapo, Manila", 
+    "customerPhoneNumber": "099908998999", 
+    "customerCity":"Manila", 
+    "customerPostalCode": "1400" 
+}
+```
+And it will display like this, This means data is Successfully stored on the database table
+| id  | productName | customerEmail | customerFullName | customerAddress | customerPhoneNumber | customerCity | customerPostalCode
+| -------------     | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| 1   | Black Oak Manila Varsity Old | saguinsintestmail@gmail.com | Carl Saginsin | Barangay 3, San Sebastian Street Quiapo, Manila | 099908998999 | Manila | 1400
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### For the ```PUT``` HTTP request do  the following:
+Put the HTTP request on ```PUT```  and then put the ```router.put('/api/orders/:id', updateOrders);``` as ```http://localhost:3000/api/orders/:id```
+### For the ```DELETE``` HTTP request do  the following:
+Put the HTTP request on ```DELETE```  and then put the ```router.post('/api/orders', addNewOrders);``` as ```http://localhost:3000/api/orders:id``` the ```id``` will be the indicator which data on the table will be deleted
+### The following endpoint testing will be the same as the ```Orders``` just do the same on the other using ```Postman```
