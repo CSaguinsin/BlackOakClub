@@ -7,6 +7,23 @@ A full stack e-commerce web app built using the following technologies. This pro
 - Railway
 - postman
 - git
+
+
+## Frontend architecture
+Created using ReactJs, TailwindCSS, and Axios for backend communication with the ExpressJs app
+
+```javascript
+src/app
+│── components/                 # Components folder
+│── services/
+│   └── admin                  # API communication layer for ADMIN
+|   └── crm                    # API communication layer for CRM
+|   └── ecom                   # API communication layer for E-Commerce
+|       └── orderService.js    # Communication endpoint for orders CRUD
+│── App.jsx                    # Main application component with routing
+│── index.css                  # Tailwind CSS and custom styles
+└── main.jsx                   # React application entry point
+```
 ## Backend architecture
 Created using ExpressJs, followed the industry standard of creating ```Routes```, and ```Controllers``` on seperate file and the ```server.js``` as the entry point of the expressJs app.
 <br> 
