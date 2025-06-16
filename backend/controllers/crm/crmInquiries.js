@@ -4,24 +4,6 @@ const displayAllInquiries = (req, res) => {
     res.json(inquiries)
 };
 
-const addNewInquiries = (req, res) => {
-    const {
-        customerFullName,
-        customerInquiry,
-        customerPhoneNumber,
-        customerEmail
-    } = req.body;
-
-    const newInquiry = {
-        id: inquiries.lenght + 1,
-        customerFullName,
-        customerInquiry,
-        customerPhoneNumber,
-        customerEmail
-    };
-    inquiries.push(newInquiry);
-    res.status(201).json(newInquiry)
-}
 
 const deleteInquiries = (req, res) => {
     const id = parseInt(req.params.id);
@@ -35,6 +17,5 @@ const deleteInquiries = (req, res) => {
 
 module.exports = {
     displayAllInquiries,
-    addNewInquiries,
     deleteInquiries
 }

@@ -26,7 +26,7 @@ export const orderService = {
 
     addNewOrders: async () => {
         try{
-            const response = await api.get(addNewOrdersAPI);
+            const response = await api.post(addNewOrdersAPI);
             return response.data;
         } catch(error) {
             console.error('Error adding new Orders:', error);
@@ -36,7 +36,7 @@ export const orderService = {
 
     updateOrders: async () => {
         try {
-            const response = await api.get(updateOrdersAPI);
+            const response = await api.put(updateOrdersAPI);
             return response.data;
         } catch(error) {
             console.error('Error updating order:', error);
@@ -46,7 +46,7 @@ export const orderService = {
 
     deleteOrders: async () => {
         try {
-            const response = await api.get(deleteOrdersAPI);
+            const response = await api.delete(deleteOrdersAPI);
             return response.data;
         } catch(error) {
             console.error('Error deleting order:', error);

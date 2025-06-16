@@ -14,15 +14,18 @@ Created using ReactJs, TailwindCSS, and Axios for backend communication with the
 
 ```javascript
 src/app
+│── auth/                       # authentication folder
 │── components/                 # Components folder
 │── services/
 │   └── admin                  # API communication layer for ADMIN
 |   └── crm                    # API communication layer for CRM
+|       └── customerInquiriesService.js    # Communication endpoint for customer inquiries on crm module
+|       └── customerService.js             # Communication endpoint for customers on crm module  
 |   └── ecom                   # API communication layer for E-Commerce
-|       └── orderService.js    # Communication endpoint for orders CRUD
-│── App.jsx                    # Main application component with routing
-│── index.css                  # Tailwind CSS and custom styles
-└── main.jsx                   # React application entry point
+|       └── orderService.js    # Communication endpoint for orders on ecom module
+|       └── productService.js  # Communication endpoint for products on ecom module  
+│── page.js                    # Main application component with routing
+└── layout.js                   # React application entry point
 ```
 ## Backend architecture
 Created using ExpressJs, followed the industry standard of creating ```Routes```, and ```Controllers``` on seperate file and the ```server.js``` as the entry point of the expressJs app.
