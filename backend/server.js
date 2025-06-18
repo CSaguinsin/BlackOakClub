@@ -1,20 +1,28 @@
+
+require('dotenv').config();
+
 const express = require('express');
 const app = express();
-// ecommerce routes
+
+// Middleware
+app.use(express.json());
+
+// Authentication routes
+const authRoutes = require('./routes/user/auth');
+app.use(authRoutes);
+
+// Ecommerce routes
 const ecomOrderRoutes = require('./routes/ecommerce/orders');
 const ecomProductRoutes = require('./routes/ecommerce/products');
-app.use(express.json());
 app.use(ecomOrderRoutes);
 app.use(ecomProductRoutes);
 
-// crm routes
+// CRM routes
 const crmInquiriesRoute = require('./routes/crm/inquiries');
-app.use(express.json());
 app.use(crmInquiriesRoute);
 
-
-
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
+  console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
 });

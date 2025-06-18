@@ -24,3 +24,6 @@ module.exports = inquiries
 
 const customers = []
 module.exports = customers
+
+const fakeAuth = []
+module.exports = fakeAuth
