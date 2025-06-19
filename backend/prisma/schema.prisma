@@ -1,0 +1,50 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model customers {
+  customerId          Int        @id @default(autoincrement()) @db.UnsignedInt
+  customerEmail       String?    @db.VarChar(50)
+  customerFullName    String?    @db.VarChar(100)
+  customerAddress     String?    @db.VarChar(100)
+  customerPhoneNumber BigInt?
+  customerCity        String?    @db.VarChar(100)
+  customerPostalCode  Int?
+  inquiries           inquiries?
+  orders              orders[]
+}
+
+model inquiries {
+  inquiryId          Int        @id @default(autoincrement()) @db.UnsignedInt
+  customerId         Int?       @unique(map: "customerId") @db.UnsignedInt
+  inquiryTitle       String?    @db.VarChar(50)
+  inquiryDescription String?    @db.VarChar(100)
+  customers          customers? @relation(fields: [customerId], references: [customerId], onDelete: Restrict, onUpdate: Restrict, map: "inquiries_ibfk_1")
+}
+
+model orders {
+  orderId     Int        @id @default(autoincrement()) @db.UnsignedInt
+  customerId  Int?       @db.UnsignedInt
+  productId   Int?       @db.UnsignedInt
+  orderDate   DateTime?  @db.Date
+  orderStatus String?    @db.VarChar(50)
+  customers   customers? @relation(fields: [customerId], references: [customerId], onDelete: Restrict, onUpdate: Restrict, map: "orders_ibfk_1")
+  products    products?  @relation(fields: [productId], references: [productId], onDelete: Restrict, onUpdate: Restrict, map: "orders_ibfk_2")
+
+  @@index([customerId], map: "customerId")
+  @@index([productId], map: "productId")
+}
+
+model products {
+  productId          Int      @id @default(autoincrement()) @db.UnsignedInt
+  productName        String?  @db.VarChar(100)
+  productDescription String?  @db.VarChar(255)
+  productPrice       Decimal? @db.Decimal(10, 2)
+  orders             orders[]
+}

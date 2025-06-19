@@ -1,18 +1,18 @@
-const inquiries = require('../../data/mockEcomDB');
+const prisma = new PrismaClient();
 
-const displayAllInquiries = (req, res) => {
+
+const displayAllInquiries = async (req, res) => {
+    const inquiries = await prisma.inquiries.findMany();
     res.json(inquiries)
-};
+}
 
-
-const deleteInquiries = (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = inquiries.findIndex(updateInquiry => updateInquiry.id === id);
-    if(index !== -1) {
-        const deleted = inquiries.splice(index, 1);
-        return res.json({ message: 'Customer Inquiry deleted', deleted});
+const deleteInquiries = async (req, res) => {
+    try {
+        const deleted = await prisma.inquiries.delete({ where: {id: parseInt(req.params.id) }});
+        res.json({ message: "Inquiry successfuly deleted", deleted});
+    } catch {
+        res.status(404).json({ error: 'Inquiry not found'});
     }
-    res.status(404).json({ error: 'Inquiry not found'})
 }
 
 module.exports = {

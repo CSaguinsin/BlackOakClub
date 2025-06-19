@@ -1,49 +1,39 @@
-const customers = require('../../data/mockEcomDB');
+const prisma = new PrismaClient();
 
-const getAllCustomers = (req, res) => {
-    res.json(customers)
+const getAllCustomers = async (req, res) => {
+  const customers = await prisma.customer.findMany();
+  res.json(customers);
 };
 
-const getCustomerById = (req, res) => {
-    const id = req.params.id;
-    res.send(`User ID: ${id}`);
+const getCustomerById = async (req, res) => {
+  const id = parseInt(req.params.id);
+  const customer = await prisma.customer.findUnique({ where: { id } });
+  if (!customer) return res.status(404).json({ error: 'Customer not found' });
+  res.json(customer);
 };
 
-const updateCustomer = (req, res) => {
-    const id = parseInt(req.params.id);
-    const {
-        customerEmail,
-        customerFullName,
-        customerAddress,
-        customerPhoneNumber,
-        customerCity,
-        customerPostalCode
-    } = req.body;
 
-    const index = customers.findIndex(customer => customer.id === id);
-    if (index !== -1) {
-        if (customerEmail !== undefined) customers[index].customerEmail = customerEmail;
-        if (customerFullName !== undefined) customers[index].customerFullName = customerFullName;
-        if (customerAddress !== undefined) customers[index].customerAddress = customerAddress;
-        if (customerPhoneNumber !== undefined) customers[index].customerPhoneNumber = customerPhoneNumber;
-        if (customerCity !== undefined) customers[index].customerCity = customerCity;
-        if (customerPostalCode !== undefined) customers[index].customerPostalCode = customerPostalCode;
-    
-        return res.json(customers[index]);
-    }
-
-    res.status(404).json({ error: 'Customer not found'});
+const updateCustomer = async (req, res) => {
+  const id = parseInt(req.params.id);
+  try {
+    const updatedCustomer = await prisma.customer.update({
+      where: { id },
+      data: { ...req.body }
+    });
+    res.json(updatedCustomer);
+  } catch {
+    res.status(404).json({ error: 'Customer not found' });
+  }
 };
 
-const deleteCustomer = (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = customers.findIndex(updatecustomer => updatecustomer.id === id);
-    if(index !== -1) {
-        const deleted = customers.splice(index, 1);
-        return res.json({ message: 'Customer deleted successfully', deleted})
-    }
-    res.status(404).json({error: 'Customer not found'});
-}
+const deleteCustomer = async (req, res) => {
+  try {
+    const deleted = await prisma.customer.delete({ where: { id: parseInt(req.params.id) } });
+    res.json({ message: 'Customer deleted successfully', deleted });
+  } catch {
+    res.status(404).json({ error: 'Customer not found' });
+  }
+};
 
 
 module.exports = {

@@ -1,11 +1,10 @@
-const categories = []
-module.exports = categories
-
 const orders = [
     [
         {
             "id": 1,
             "productName": "BlackOak Family and Friends",
+            "productPrice": "",
+            "productDescription": "",
             "customerFullName": "Carl Saginsin",
             "customerAddress": "San Antonio Valley 5",
             "customerPhoneNumber": "0915671853802",
