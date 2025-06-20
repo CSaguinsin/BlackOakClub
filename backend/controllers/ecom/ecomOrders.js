@@ -1,4 +1,3 @@
-const orders = require('../../data/mockEcomDB')
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
@@ -34,7 +33,7 @@ const addNewOrders = async (req, res) => {
 
 
 const updateOrders = async (req, res) => {
-  const orderId = parseInt(req.params.id);
+  const orderId = parseInt(req.params.ordersId);
   const {
     customerId,
     productId,
@@ -65,11 +64,9 @@ const updateOrders = async (req, res) => {
 };
 
 
-
-
 const deleteOrders = async (req, res) => {
   try {
-    const deleted = await prisma.orders.delete({ where: { id: parseInt(req.params.id) } });
+    const deleted = await prisma.orders.delete({ where: { orderId: parseInt(req.params.id) } });
     res.json({ message: 'Order deleted successfully', deleted });
   } catch {
     res.status(404).json({ error: 'Customer not found' });

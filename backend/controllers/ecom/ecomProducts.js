@@ -1,59 +1,71 @@
-const products = require('../../data/mockEcomDB')
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient();
 
-const getAllProducts = (req, res) => {
+// const getAllProducts = (req, res) => {
+//     res.json(products);
+// };
+
+const getAllProducts = async (req, res) => {
+    const products = await prisma.products.findMany();
     res.json(products);
 };
 
-const createProducts = (req, res) => {
-    const { productName, productPrice, productDescription } = req.body;
-    const newProduct = {
-        productId: products.length + 1,
-        productName,
-        productPrice,
-        productDescription,
-        createdAt: new Date(),
-    };
-    products.push(newProduct);
-    res.status(201).json(newProduct);
-};
-
-const updateProducts = (req, res) => {
-    const id = parseInt(req.params.id);
+const createProducts = async (req, res) => {
     const {
-        productId,
         productName,
         productDescription,
         productPrice,
-        productCategory,
-        productStock
     } = req.body;
 
-    const index = products.findIndex(product => product.id === id);
-    if (index !== -1) {
-        // Update only provided fields
-        if (productId !== undefined) products[index].productId = productId;
-        if (productName !== undefined) products[index].productName = productName;
-        if (productDescription !== undefined) products[index].productDescription = productDescription;
-        if (productPrice !== undefined) products[index].productPrice = productPrice;
-        if (productCategory !== undefined) products[index].productCategory = productCategory;
-        if (productStock !== undefined) products[index].productStock = productStock;
-
-        return res.json(products[index]);
-    }
-
-    res.status(404).json({ error: 'Product not found' });
+    try {
+        const newProduct = await prisma.products.create({
+            data: {
+                productName: productName ? parseInt(productName) : null,
+                productDescription: productDescription ? parseInt(productDescription): null,
+                productPrice: productPrice ? parseInt(productPrice) : null
+            }
+        });
+        
+        res.status(201).json(newProduct);
+    } catch (error) {
+        console.error('Error creating new Product:', error);
+        res.status(500).json({ error: 'Failed to create new product'});
+    };
 };
 
 
-const deleteProducts = (req, res) => {
-    const id = parseInt(req.params.id);
-    const index = products.findIndex(updateproduct => updateproduct.id === id);
-    if(index !== -1) {
-        const deleted = products.splice(index, 1);
-        return res.json({ message: 'Deleted Successfully', deleted});
-    }
+const updateProducts = async (req, res) => {
+    const productId = parseInt(req.params.productId);
+    const {
+        productName,
+        productDescription,
+        productPrice,
+    } = req.body;
 
-    res.status(404).json({ error: 'Product not found'});
+    try {
+        const updateProduct = await prisma.products.update({
+            where: { productId },
+            data: {
+                ...(productName !== undefined && {productName: parseInt(productName) }),
+                ...(productDescription !== undefined && {productDescription: parseInt(productDescription) }),
+                ...(productPrice !== undefined && {productPrice: parseInt(productPrice) })
+            }
+        });
+
+        res.json(updateProduct);
+    } catch (error) {
+        console.error('Error updating products:', error);
+        res.status(500).json({ error: 'Failed to update product'});
+    };
+}
+
+
+const deleteProducts = async (req, res) => {
+    try {
+        const deleted = await prisma.products.delete({ where: { productId: parseInt(req.params.productId)}})
+    } catch(error) {
+        res.status(404).json({ error: 'Product not found'});
+    }
 }
 
 
