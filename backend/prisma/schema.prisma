@@ -48,3 +48,12 @@ model products {
   productPrice       Decimal? @db.Decimal(10, 2)
   orders             orders[]
 }
+
+model users {
+  fullName     String? @db.VarChar(50)
+  emailAddress String? @db.VarChar(100)
+  phoneNumber  Int?
+  postalCode   Int?
+  city         String? @db.VarChar(100)
+  id           Int     @id @default(autoincrement())
+}
