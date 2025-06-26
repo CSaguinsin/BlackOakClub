@@ -1,14 +1,62 @@
 # BlackOak Club
 A full stack e-commerce web app built using the following technologies. This project aim to developed a webstore and internal CRM tool for BlackOak.
 
-- reactjs, <br>
-- nodejs/expressjs,  <br>
-- prisma ORM
-- mysql,  <br>
-- Railway
-- postman
-- git
+### Tech Stack
+- **Frontend**: ReactJs + Vite + TailwindCSS
+- **Backend**: Node.js + Express.js + Prisma ORM
+- **Database**: MySQL
+- **API Testing Toos**: Postman
+- **Deployment**: Railway
 
+### Features
+- 📊 **Live Dashboard** with auto-refresh for in-progress audits
+- 🚀 **Internal Company CRM** with order status tracking
+- 🛒 **Ordering CRUD Function** Customers can add to cart, edit, and delete their orders
+- 🔎 **SEO Friendly**
+- 📱 **Responsive Design** with modern UI/UX
+
+## 🚀 Quick Start
+### Prerequisites
+- NodeJs 16
+- Git
+- XAMPP or MySQL
+
+### Installaton
+1. **Clone the repository**
+   ```bash
+   git clone <repository-url>
+   cd blackoakclub
+   ```
+
+2. **Install dependencies**
+   ```bash
+   # Frontend dependencies
+   npm install
+
+   # Backend dependencies
+   cd backend && npm install
+   ```
+
+3. **Setup Environment Variables**
+   
+   Create `backend/.env` file:
+   ```env
+    HOST=
+    PORT=
+    DATABASE=your_database_name
+    USER=your_database_user
+    PASSWORD=your_database_password
+    DATABASE_URL=
+   ```
+
+4. **Start the application**
+   ```bash
+   # Terminal 1: Start backend
+   cd backend && npm run dev
+
+   # Terminal 2: Start frontend
+   npm run dev
+   ```
 
 ## Frontend architecture
 Created using ReactJs, TailwindCSS, and Axios for backend communication with the ExpressJs app
